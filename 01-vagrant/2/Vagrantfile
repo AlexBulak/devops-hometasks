@@ -3,14 +3,37 @@
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "debian/buster64"
-
   config.vm.box_check_update = false
-
-  config.vm.network "public_network", ip: "192.168.100.201"
   
+  config.vm.define "web1" do |web1|
+
+    web1.vm.provision "file", source: "index.html", destination: "~/index.html"
+    web1.vm.box = "debian/buster64"  
+    web1.vm.network "public_network", ip: "192.168.100.201"
+
+    web1.vm.provision "shell", inline: <<-SHELL 
+      mv /vagrant/index.html /var/www/html
+   SHELL
+
+  end
+
+
+  config.vm.define "web2" do |web2|
+    web2.vm.provision "file", source: "index.php", destination: "~/index.php"
+    web2.vm.box = "debian/buster64"
+    web2.vm.network "public_network", ip: "192.168.100.202"
+    
+    web2.vm.provision "shell", inline: <<-SHELL
+      apt-get install -y php
+      rm /var/www/html/index.html
+      mv /vagrant/index.php /var/www/html
+    SHELL
+
+  end
+
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
     apt-get install -y apache2
   SHELL
+
 end
