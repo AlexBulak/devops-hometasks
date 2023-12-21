@@ -19,14 +19,19 @@ Vagrant.configure("2") do |config|
     apt-get update
     apt-get install -y apache2
     apt-get install -y php
+
     mkdir /var/www/web1 /var/www/web2
     rm -r /var/www/html
     mv /vagrant/index.html /var/www/web1
     mv /vagrant/index.php /var/www/web2
+    chmod 666 /var/www/web1/index.html /var/www/web2/index.html
+    
     echo "Listen 81" >> /etc/apache2/ports.conf
     rm /etc/apache2/sites-available/000-default.conf
     mv /vagrant/web1.conf /etc/apache2/sites-available/web1.conf
     mv /vagrant/web2.conf /etc/apache2/sites-available/web2.conf
+    chmod 666 /etc/apache2/sites-available/web2.conf /etc/apache2/sites-available/web1.conf
+    
     sudo a2ensite web1
     sudo a2ensite web2
     sudo service apache2 restart
