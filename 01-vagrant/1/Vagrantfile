@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
     rm -r /var/www/html
     mv /vagrant/index.html /var/www/web1
     mv /vagrant/index.php /var/www/web2
-    chmod 666 /var/www/web1/index.html /var/www/web2/index.html
+    chmod 666 /var/www/web1/index.html /var/www/web2/index.php
     
     echo "Listen 81" >> /etc/apache2/ports.conf
     rm /etc/apache2/sites-available/000-default.conf
