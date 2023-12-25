@@ -1,0 +1,37 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    config.vm.box = "debian/buster64"
+    config.vm.provision "file", source: "index.html", destination: "~/index.html"
+    config.vm.provision "file", source: "index.php", destination: "~/index.php"
+  
+  
+    config.vm.define "web1" do |web|
+        web.vm.network "private_network", ip: "192.168.56.5"
+  
+        web.vm.provision "ansible_local" do |ansible|
+            ansible.playbook = "web1.yaml"
+  
+        end
+    end 
+
+    config.vm.define "web2" do |web|
+        web.vm.network "private_network", ip: "192.168.56.6"
+  
+        web.vm.provision "ansible_local" do |ansible|
+            ansible.playbook = "web2.yaml"
+  
+        end
+    end 
+
+    config.vm.define "proxy" do |proxy|
+        proxy.vm.network "private_network", ip: "192.168.56.7"
+  
+        proxy.vm.provision "ansible_local" do |ansible|
+            ansible.playbook = "proxy.yaml"
+            ansible.inventory_path = "inventory.ini"
+  
+        end
+    end 
+  end

@@ -1,0 +1,34 @@
+- name: Web provision
+  hosts: proxy
+  become: yes
+
+  tasks:
+  - name: Install packages
+    apt:
+      pkg: 
+        - nginx
+      state: present
+
+  - name: Proxy config
+    blockinfile:
+      path: /etc/nginx/sites-available/default
+      insertafter: EOF
+      block: |
+          server {
+              listen 8080;
+              location / {
+                  proxy_pass http://192.168.56.5:80;
+              }
+          }
+
+          server {
+              listen 8081;
+              location / {
+                  proxy_pass http://192.168.56.6:80;
+              }
+          }
+
+  - name: Reload Nginx
+    service:
+      name: nginx
+      state: restarted

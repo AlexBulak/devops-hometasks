@@ -1,0 +1,27 @@
+- name: Web provision
+  hosts: web2
+  become: yes
+  
+  tasks:
+  - name: Install packages
+    apt:
+      pkg: 
+        - apache2
+        - php
+      state: present
+
+  - name: Add index.php
+    copy:
+      src: /vagrant/index.php
+      dest: /var/www/html/
+      mode: '0666'
+
+  - name: Remove default index.html
+    file:
+      path: /var/www/html/index.html
+      state: absent 
+
+  - name: Restart apache
+    systemd:
+      name: apache2
+      state: restarted

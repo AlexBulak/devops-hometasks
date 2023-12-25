@@ -1,0 +1,22 @@
+- name: Web provision
+  hosts: web1
+  become: yes
+  
+  tasks:
+  - name: Install packages
+    apt:
+      pkg: 
+        - apache2
+      state: present
+  
+  - name: Replace index.html
+    copy:
+      src: /vagrant/index.html
+      dest: /var/www/html/
+      mode: '0666'
+
+ 
+  - name: Restart apache
+    systemd:
+      name: apache2
+      state: restarted
